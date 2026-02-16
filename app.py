@@ -3,195 +3,208 @@ import pandas as pd
 import json
 import os
 import re
-import io
-import logging
-from datetime import datetime
 from jobspy import scrape_jobs
 
-# --- 1. CONFIGURACIÓN DE AUDITORÍA (LOGGING) ---
-log_filename = "auditoria_busqueda.log"
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s - %(levelname)s - %(message)s",
-    handlers=[
-        logging.FileHandler(log_filename, encoding='utf-8'),
-        logging.StreamHandler()
-    ]
-)
+# --- 1. DATOS MAESTROS (CV DANIEL GALLEGOS) ---
+PERFIL_DANIEL = {
+    "skills_tecnicas": [
+        "Python", "JavaScript", "Java", "TypeScript", "PHP", "HTML5", "CSS3", "C", 
+        "MySQL", "MongoDB", "PostgreSQL", "React", "React Native", "Next.js", 
+        "Flask", "Django", "Spring", "Express.js", "Angular", "Git", "Docker", 
+        "Kubernetes", "REST APIs", "Google Cloud", "AWS", "SCRUM", "Jira"
+    ],
+    "preferencias_busqueda": {
+        "cargos_objetivo": ["Data Engineer", "Back End Developer", "Full-stack Software Developer"],
+        "ubicacion_default": "Chile",
+        "exp_max": 4
+    }
+}
 
-def registrar_log(mensaje):
-    logging.info(mensaje)
-    if 'log_visual' not in st.session_state:
-        st.session_state.log_visual = ""
-    st.session_state.log_visual += f"{datetime.now().strftime('%H:%M:%S')} - {mensaje}\n"
-
-# --- 2. GESTIÓN DE DATOS (JSON) ---
+# --- 2. GESTIÓN DE PERSISTENCIA ---
 def cargar_perfil():
-    if os.path.exists('perfil_usuario.json'):
-        with open('perfil_usuario.json', 'r', encoding='utf-8') as f:
-            return json.load(f)
-    return None
+    if not os.path.exists('perfil_usuario.json'): return PERFIL_DANIEL
+    try:
+        with open('perfil_usuario.json', 'r', encoding='utf-8') as f: return json.load(f)
+    except: return PERFIL_DANIEL
 
-def guardar_perfil(perfil):
-    with open('perfil_usuario.json', 'w', encoding='utf-8') as f:
-        json.dump(perfil, f, indent=2, ensure_ascii=False)
-
-# Biblioteca de detección (puedes expandirla)
-TECH_LIBRARY = [
-    "python", "javascript", "react", "nextjs", "nodejs", "html", "css", "sap", "erp",
-    "sql", "nosql", "mongodb", "gcp", "aws", "azure", "docker", "kubernetes", "git",
-    "power bi", "tableau", "excel", "java", "c#", "net core", "selenium", "scrum"
-]
-
-# --- 3. MOTOR DE ANÁLISIS DETALLADO ---
-def analizar_oferta(row, perfil):
-    texto_analisis = f"{row['title']} {row['description']}".lower()
-    pref = perfil['preferencias_busqueda']
-    mis_skills = [s.lower() for s in perfil['skills_tecnicas']]
-    
-    registrar_log(f"Procesando: {row['title']} | Empresa: {row['company']}")
-    
-    # Análisis de Skills
-    encontradas = []
-    score = 0
-    for tech in TECH_LIBRARY:
-        if re.search(rf'\b{re.escape(tech)}\b', texto_analisis):
-            if tech in mis_skills:
-                encontradas.append(f"✅ {tech.upper()}")
-                score += 25
-            else:
-                encontradas.append(tech.upper())
-    
-    # Análisis de Experiencia
-    exp_info = "No detectada"
-    match_exp = re.search(r'(\d+)\s*(?:años?|years?|año)', texto_analisis)
-    if match_exp:
-        anios = int(match_exp.group(1))
-        exp_info = f"{anios} años"
-        if anios <= pref['exp_max']:
-            score += 20
-            registrar_log(f"   [OK] Experiencia: {anios} años cumple con max {pref['exp_max']}")
-        else:
-            score -= 40
-            registrar_log(f"   [X] Experiencia: {anios} años excede {pref['exp_max']}")
-
-    # Análisis de Renta (Búsqueda de montos)
-    renta_status = "No informada"
-    montos = re.findall(r'\$?\s?(\d+(?:\.\d+)+)', texto_analisis)
-    if montos:
-        for m in montos:
-            valor = int(m.replace('.', ''))
-            if pref['renta_min'] <= valor <= pref['renta_max']:
-                score += 50
-                renta_status = "✅ En Rango"
-                break
-            else:
-                renta_status = "❌ Fuera de Rango"
-
-    registrar_log(f"   Resultados: Tech({len(encontradas)}) | Renta: {renta_status} | Score Final: {score}")
-    return score, ", ".join(encontradas), exp_info, renta_status
-
-# --- 4. INTERFAZ DE USUARIO (STREAMLIT) ---
-st.set_page_config(layout="wide", page_title="DreamJob Auditor Pro")
-perfil = cargar_perfil()
-
-if not perfil:
-    st.error("Archivo perfil_usuario.json no encontrado.")
-    st.stop()
-
-# BARRA LATERAL: GESTIÓN TOTAL
-with st.sidebar:
-    st.title("⚙️ Panel de Control")
-    
-    # SECCIÓN CARGOS
-    st.subheader("🎯 Cargos Objetivo")
-    nuevo_cargo = st.text_input("Agregar nuevo cargo:")
-    if st.button("➕ Añadir Cargo") and nuevo_cargo:
-        perfil['preferencias_busqueda']['cargos_objetivo'].append(nuevo_cargo)
-        guardar_perfil(perfil)
-        st.rerun()
-    
-    cargo_borrar = st.selectbox("Eliminar cargo:", ["Seleccionar..."] + perfil['preferencias_busqueda']['cargos_objetivo'])
-    if cargo_borrar != "Seleccionar..." and st.button("🗑️ Quitar Cargo"):
-        perfil['preferencias_busqueda']['cargos_objetivo'].remove(cargo_borrar)
-        guardar_perfil(perfil)
-        st.rerun()
-
-    st.divider()
-
-    # SECCIÓN SKILLS
-    st.subheader("💻 Mis Skills")
-    nueva_skill = st.text_input("Agregar skill:")
-    if st.button("➕ Añadir Skill") and nueva_skill:
-        perfil['skills_tecnicas'].append(nueva_skill.lower())
-        guardar_perfil(perfil)
-        st.rerun()
-    
-    skill_borrar = st.selectbox("Eliminar skill:", ["Seleccionar..."] + sorted(perfil['skills_tecnicas']))
-    if skill_borrar != "Seleccionar..." and st.button("🗑️ Quitar Skill"):
-        perfil['skills_tecnicas'].remove(skill_borrar)
-        guardar_perfil(perfil)
-        st.rerun()
-
-    st.divider()
-
-    # SECCIÓN RENTAS Y FILTROS
-    st.subheader("💰 Rango Salarial y Exp")
-    p = perfil['preferencias_busqueda']
-    r_min = st.number_input("Renta Mínima ($)", value=p.get('renta_min', 0))
-    r_max = st.number_input("Renta Máxima ($)", value=p.get('renta_max', 0))
-    e_max = st.slider("Años Exp. Máxima", 0, 15, p.get('exp_max', 5))
-    
-    if st.button("💾 Guardar Preferencias"):
-        perfil['preferencias_busqueda'].update({"renta_min": r_min, "renta_max": r_max, "exp_max": e_max})
-        guardar_perfil(perfil)
-        st.success("Preferencias actualizadas")
-
-# ÁREA PRINCIPAL
-st.title("🚀 Buscador con Auditoría de Datos")
-
-if st.button("🔍 INICIAR BÚSQUEDA Y ANÁLISIS", type="primary"):
-    st.session_state.log_visual = "" # Reiniciar log
-    res_final = []
-    cargos_a_buscar = perfil['preferencias_busqueda']['cargos_objetivo']
-    
-    registrar_log(f"Iniciando ciclo para {len(cargos_a_buscar)} cargos.")
-    
-    progreso = st.progress(0)
-    for idx, c in enumerate(cargos_a_buscar):
-        registrar_log(f"--- BUSCANDO EN PORTALES: {c} ---")
+def cargar_resultados():
+    if os.path.exists('resultados_busqueda.json'):
         try:
-            jobs = scrape_jobs(
-                site_name=["linkedin", "indeed"],
-                search_term=c,
-                location=perfil['preferencias_busqueda']['ubicacion_default'],
-                results_wanted=5
-            )
-            for _, r in jobs.iterrows():
-                sc, tc, ex, rn = analizar_oferta(r, perfil)
-                res_final.append({
-                    "Puntos": sc, "Cargo": r['title'], "Empresa": r['company'],
-                    "Tecnologías": tc, "Exp. Req": ex, "Renta": rn, "Link": r['job_url']
-                })
-        except Exception as e:
-            registrar_log(f"Error en cargo {c}: {str(e)}")
-        progreso.progress((idx + 1) / len(cargos_a_buscar))
+            with open('resultados_busqueda.json', 'r', encoding='utf-8') as f: return json.load(f)
+        except: return []
+    return []
 
-    if res_final:
-        df = pd.DataFrame(res_final).sort_values("Puntos", ascending=False)
-        st.subheader("📋 Resultados")
-        st.dataframe(df, use_container_width=True, hide_index=True)
+def guardar_datos(perfil, resultados):
+    with open('perfil_usuario.json', 'w', encoding='utf-8') as f: 
+        json.dump(perfil, f, indent=2, ensure_ascii=False)
+    with open('resultados_busqueda.json', 'w', encoding='utf-8') as f: 
+        json.dump(resultados, f, indent=2, ensure_ascii=False)
+
+# --- 3. CONFIGURACIÓN UI Y CSS REPARADO ---
+st.set_page_config(layout="wide", page_title="DreamJob Auditor - Daniel Gallegos")
+
+# CSS para corregir legibilidad y expansión de tags
+st.markdown("""
+    <style>
+        /* Forzar que el multiselect se expanda hacia abajo */
+        .stMultiSelect div[data-baseweb="select"] > div:first-child {
+            max-height: none !important;
+            overflow-y: visible !important;
+        }
         
-        # Descargas
-        col_d1, col_d2 = st.columns(2)
-        with col_d1:
-            csv = df.to_csv(index=False).encode('utf-8')
-            st.download_button("📥 Descargar Tabla (CSV)", csv, "resultados.csv", "text/csv")
-        with col_d2:
-            with open(log_filename, "rb") as f:
-                st.download_button("📄 Descargar Log Completo (.txt)", f, "auditoria.txt")
+        /* Mejorar legibilidad en el Sidebar */
+        section[data-testid="stSidebar"] {
+            background-color: #1E1E1E; /* Fondo oscuro profesional */
+            color: white;
+        }
+        
+        /* Estilo para los tags seleccionados para que resalten */
+        span[data-baseweb="tag"] {
+            background-color: #007bff !important;
+            color: white !important;
+            border-radius: 4px !important;
+        }
+        
+        /* Ajustar color de labels en el sidebar */
+        section[data-testid="stSidebar"] .stMarkdown p {
+            color: #E0E0E0;
+            font-weight: 600;
+        }
+    </style>
+""", unsafe_allow_html=True)
 
-# VISOR DE LOGS (Siempre visible si hay contenido)
-if 'log_visual' in st.session_state and st.session_state.log_visual:
-    with st.expander("👁️ Ver Auditoría del Proceso (Detalle Técnico)"):
-        st.code(st.session_state.log_visual)
+# Inicializar estados
+if "perfil" not in st.session_state: st.session_state.perfil = cargar_perfil()
+if "resultados" not in st.session_state: st.session_state.resultados = cargar_resultados()
+if "v_cargos" not in st.session_state: st.session_state.v_cargos = 0
+if "v_skills" not in st.session_state: st.session_state.v_skills = 0
+
+# --- 4. CALLBACKS ---
+def cb_agregar_cargo():
+    n = st.session_state.in_cargo.strip()
+    if n and n not in st.session_state.perfil['preferencias_busqueda']['cargos_objetivo']:
+        st.session_state.perfil['preferencias_busqueda']['cargos_objetivo'].append(n)
+        guardar_datos(st.session_state.perfil, st.session_state.resultados)
+        st.session_state.v_cargos += 1
+    st.session_state.in_cargo = ""
+
+def cb_agregar_skill():
+    n = st.session_state.in_skill.strip()
+    if n and n.lower() not in [s.lower() for s in st.session_state.perfil['skills_tecnicas']]:
+        st.session_state.perfil['skills_tecnicas'].append(n)
+        guardar_datos(st.session_state.perfil, st.session_state.resultados)
+        st.session_state.v_skills += 1
+    st.session_state.in_skill = ""
+
+# --- 5. MENÚ LATERAL ---
+with st.sidebar:
+    st.header("👤 Perfil Profesional")
+    st.caption("Daniel Gallegos | Ingeniero Informático")
+    
+    # Cargos
+    c_list = st.session_state.perfil['preferencias_busqueda']['cargos_objetivo']
+    sel_c = st.multiselect("🎯 CARGOS ACTIVOS:", options=c_list, default=c_list, key=f"ms_c_{st.session_state.v_cargos}")
+    if len(sel_c) != len(c_list):
+        st.session_state.perfil['preferencias_busqueda']['cargos_objetivo'] = sel_c
+        guardar_datos(st.session_state.perfil, st.session_state.resultados); st.rerun()
+    st.text_input("Añadir cargo:", key="in_cargo", on_change=cb_agregar_cargo, placeholder="Ej: Backend Developer")
+
+    st.divider()
+
+    # Skills
+    s_list = st.session_state.perfil['skills_tecnicas']
+    sel_s = st.multiselect("💻 MIS SKILLS:", options=s_list, default=s_list, key=f"ms_s_{st.session_state.v_skills}")
+    if len(sel_s) != len(s_list):
+        st.session_state.perfil['skills_tecnicas'] = sel_s
+        guardar_datos(st.session_state.perfil, st.session_state.resultados); st.rerun()
+    st.text_input("Añadir skill:", key="in_skill", on_change=cb_agregar_skill, placeholder="Ej: GCP, FastAPI...")
+
+    st.divider()
+    exp_max = st.slider("Experiencia Máxima Requerida:", 0, 15, st.session_state.perfil['preferencias_busqueda']['exp_max'])
+    if exp_max != st.session_state.perfil['preferencias_busqueda']['exp_max']:
+        st.session_state.perfil['preferencias_busqueda']['exp_max'] = exp_max
+        guardar_datos(st.session_state.perfil, st.session_state.resultados)
+
+    if st.button("🗑️ Borrar Resultados Guardados", use_container_width=True):
+        st.session_state.resultados = []
+        guardar_datos(st.session_state.perfil, [])
+        st.rerun()
+
+# --- 6. MOTOR DE ANÁLISIS ---
+def analizar_oferta(row, perfil):
+    title = str(row.get('title', '')).lower()
+    desc = str(row.get('description', '')).lower()
+    full_text = f"{title} {desc}"
+    
+    # Detección de Seniority y Años
+    es_senior = any(x in title for x in ["senior", "sr", "lead", "principal", "staff"])
+    exp_match = re.search(r'(\d+)\s*(?:\+|a)?\s*(?:años?|years?)', full_text)
+    anios_req = int(exp_match.group(1)) if exp_match else 0
+    
+    match_skills = [s.upper() for s in perfil['skills_tecnicas'] if s.lower() in full_text]
+    score = len(match_skills) * 10
+    
+    alertas = []
+    if es_senior:
+        score -= 80
+        alertas.append("🚫 SENIOR")
+    if anios_req > perfil['preferencias_busqueda']['exp_max']:
+        score -= 50
+        alertas.append(f"⚠️ {anios_req} AÑOS")
+    if "junior" in title or "jr" in title:
+        score += 30
+        alertas.append("⭐ JUNIOR")
+
+    match_str = " | ".join(alertas + [f"✅ {s}" for s in match_skills])
+    return max(0, score), match_str, f"{anios_req} años"
+
+# --- 7. CUERPO PRINCIPAL ---
+st.title("🚀 DreamJob Auditor Pro")
+
+# Mostrar lo que ya tenemos guardado
+if st.session_state.resultados:
+    st.subheader(f"📂 Ofertas Guardadas ({len(st.session_state.resultados)})")
+    df_mem = pd.DataFrame(st.session_state.resultados).sort_values("Score", ascending=False)
+    st.dataframe(df_mem, width='stretch', hide_index=True, column_config={
+        "Link": st.column_config.LinkColumn("Postular"),
+        "Score": st.column_config.ProgressColumn("Match", min_value=0, max_value=150)
+    })
+
+if st.button("🔍 INICIAR BÚSQUEDA MASIVA", type="primary"):
+    cargos = st.session_state.perfil['preferencias_busqueda']['cargos_objetivo']
+    if not cargos:
+        st.warning("Configura los cargos en el menú lateral.")
+    else:
+        urls_vistas = {res['Link'] for res in st.session_state.resultados}
+        contenedor = st.empty()
+        barra = st.progress(0)
+        
+        for idx, cargo in enumerate(cargos):
+            st.write(f"Buscando: `{cargo}`...")
+            try:
+                jobs = scrape_jobs(
+                    site_name=["linkedin", "indeed", "glassdoor", "google"],
+                    search_term=cargo,
+                    location="Chile",
+                    results_wanted=15
+                )
+                if jobs is not None:
+                    for _, r in jobs.iterrows():
+                        link = r.get('job_url')
+                        if link not in urls_vistas:
+                            puntos, match, exp = analizar_oferta(r, st.session_state.perfil)
+                            nueva = {
+                                "Score": puntos, "Cargo": r.get('title'), "Empresa": r.get('company'),
+                                "Análisis": match, "Exp": exp, "Link": link
+                            }
+                            st.session_state.resultados.append(nueva)
+                            urls_vistas.add(link)
+                            
+                            df_v = pd.DataFrame(st.session_state.resultados).sort_values("Score", ascending=False)
+                            contenedor.dataframe(df_v, width='stretch', hide_index=True, column_config={
+                                "Link": st.column_config.LinkColumn("Postular"),
+                                "Score": st.column_config.ProgressColumn("Match", min_value=0, max_value=150)
+                            })
+                            guardar_datos(st.session_state.perfil, st.session_state.resultados)
+            except Exception as e: st.error(f"Error: {e}")
+            barra.progress((idx + 1) / len(cargos))

@@ -100,3 +100,15 @@
 2026-02-16 14:36:20,255 - INFO -    Resultados: Tech(0) | Renta: No informada | Score Final: 0
 2026-02-16 14:36:20,256 - INFO - Procesando: Data Engineer | Empresa: Scotiabank
 2026-02-16 14:36:20,256 - INFO -    Resultados: Tech(0) | Renta: No informada | Score Final: 0
+2026-02-16 14:42:52,371 - INFO - Buscando 'Software Engineer' en LinkedIn, Indeed, Glassdoor y Google...
+2026-02-16 14:42:54,686 - INFO - Error buscando Software Engineer: 'site_name'
+2026-02-16 14:42:54,687 - INFO - Buscando 'Integration Engineer' en LinkedIn, Indeed, Glassdoor y Google...
+2026-02-16 14:42:56,355 - INFO - Error buscando Integration Engineer: 'site_name'
+2026-02-16 14:42:56,356 - INFO - Buscando 'Data Engineer' en LinkedIn, Indeed, Glassdoor y Google...
+2026-02-16 14:42:58,158 - INFO - Error buscando Data Engineer: 'site_name'
+2026-02-16 14:43:47,645 - INFO - Iniciando búsqueda para: Software Engineer
+2026-02-16 14:43:49,237 - INFO - Encontrados 7 resultados brutos para Software Engineer
+2026-02-16 14:43:49,239 - INFO - Iniciando búsqueda para: Integration Engineer
+2026-02-16 14:43:50,725 - INFO - Encontrados 7 resultados brutos para Integration Engineer
+2026-02-16 14:43:50,728 - INFO - Iniciando búsqueda para: Data Engineer
+2026-02-16 14:43:52,384 - INFO - Encontrados 7 resultados brutos para Data Engineer

@@ -1,0 +1,402 @@
+[
+  {
+    "Score": 30,
+    "Cargo": "Developer Back End Practica profesional",
+    "Empresa": "Seguros Falabella",
+    "Análisis": "✅ JAVASCRIPT | ✅ JAVA | ✅ C",
+    "Exp": "0 años",
+    "Link": "https://www.glassdoor.com/job-listing/j?jl=1010035233740"
+  },
+  {
+    "Score": 50,
+    "Cargo": "Back-End Developer (Data Ingestion)",
+    "Empresa": "Launchpad Technologies Inc.",
+    "Análisis": "✅ SQL | ✅ C | ✅ MYSQL | ✅ GIT | ✅ KUBERNETES",
+    "Exp": "5 años",
+    "Link": "https://www.glassdoor.com/job-listing/j?jl=1010026221143"
+  },
+  {
+    "Score": 30,
+    "Cargo": "Angular/Node Fullstack Developer",
+    "Empresa": "Accenture",
+    "Análisis": "✅ C | ✅ ANGULAR | ✅ GIT",
+    "Exp": "3 años",
+    "Link": "https://www.glassdoor.com/job-listing/j?jl=1010016947645"
+  },
+  {
+    "Score": 30,
+    "Cargo": "Developer Back End PL/SQL (Oracle)",
+    "Empresa": "AGtec Servicios Informáticos",
+    "Análisis": "✅ SQL | ✅ C | ✅ JIRA",
+    "Exp": "0 años",
+    "Link": "https://www.glassdoor.com/job-listing/j?jl=1010016278829"
+  },
+  {
+    "Score": 60,
+    "Cargo": "Desarrollador de back-end",
+    "Empresa": "FID CHILE SEGUROS GENERALES S.A.",
+    "Análisis": "✅ SQL | ✅ JAVA | ✅ TYPESCRIPT | ✅ C | ✅ MYSQL | ✅ SPRING",
+    "Exp": "4 años",
+    "Link": "https://www.glassdoor.com/job-listing/j?jl=1010011384571"
+  },
+  {
+    "Score": 0,
+    "Cargo": "Developer Back End (Remoto-Contrato por Proyecto)",
+    "Empresa": "SOHO",
+    "Análisis": "⚠️ 28 AÑOS | ✅ SQL | ✅ TYPESCRIPT | ✅ C | ✅ GIT | ✅ GOOGLE CLOUD",
+    "Exp": "28 años",
+    "Link": "https://www.glassdoor.com/job-listing/j?jl=1009994908430"
+  },
+  {
+    "Score": 60,
+    "Cargo": "Software Engineer",
+    "Empresa": "Ria Money Transfer (Dandelion)",
+    "Análisis": "✅ SQL | ✅ PYTHON | ✅ JAVA | ✅ C | ✅ GIT | ✅ REST APIS",
+    "Exp": "3 años",
+    "Link": "https://www.glassdoor.com/job-listing/j?jl=1009975136666"
+  },
+  {
+    "Score": 50,
+    "Cargo": "Fullstack Developer (Senior) - Python (Django) + React - Remote, Latin America",
+    "Empresa": "Bluelight Consulting",
+    "Análisis": "🚫 SENIOR | ✅ SQL | ✅ PYTHON | ✅ JAVASCRIPT | ✅ JAVA | ✅ C | ✅ MONGODB | ✅ POSTGRESQL | ✅ REACT | ✅ FLASK | ✅ DJANGO | ✅ GIT | ✅ DOCKER | ✅ AWS",
+    "Exp": "5 años",
+    "Link": "https://www.glassdoor.com/job-listing/j?jl=1009944688259"
+  },
+  {
+    "Score": 30,
+    "Cargo": "Mid Level Software Developer",
+    "Empresa": "Topsort",
+    "Análisis": "✅ PYTHON | ✅ TYPESCRIPT | ✅ C",
+    "Exp": "2 años",
+    "Link": "https://www.glassdoor.com/job-listing/j?jl=1009686706471"
+  },
+  {
+    "Score": 110,
+    "Cargo": "Full Stack Developer (Laravel/Vue.js)",
+    "Empresa": "Curotec",
+    "Análisis": "✅ SQL | ✅ JAVASCRIPT | ✅ JAVA | ✅ PHP | ✅ HTML5 | ✅ CSS3 | ✅ C | ✅ MYSQL | ✅ GIT | ✅ AWS | ✅ JIRA",
+    "Exp": "5 años",
+    "Link": "https://www.glassdoor.com/job-listing/j?jl=1009871062835"
+  },
+  {
+    "Score": 160,
+    "Cargo": "Full-Stack Laravel Engineer",
+    "Empresa": "Curotec",
+    "Análisis": "✅ SQL | ✅ JAVASCRIPT | ✅ JAVA | ✅ TYPESCRIPT | ✅ PHP | ✅ HTML5 | ✅ CSS3 | ✅ C | ✅ MYSQL | ✅ MONGODB | ✅ POSTGRESQL | ✅ GIT | ✅ DOCKER | ✅ KUBERNETES | ✅ AWS | ✅ SCRUM",
+    "Exp": "0 años",
+    "Link": "https://www.glassdoor.com/job-listing/j?jl=1009871062697"
+  },
+  {
+    "Score": 20,
+    "Cargo": "Senior .NET/Angular Developer",
+    "Empresa": "Curotec",
+    "Análisis": "🚫 SENIOR | ✅ SQL | ✅ JAVASCRIPT | ✅ JAVA | ✅ TYPESCRIPT | ✅ HTML5 | ✅ CSS3 | ✅ C | ✅ ANGULAR | ✅ GIT | ✅ SCRUM",
+    "Exp": "3 años",
+    "Link": "https://www.glassdoor.com/job-listing/j?jl=1009871062614"
+  },
+  {
+    "Score": 0,
+    "Cargo": "Senior Full-stack Developer (Laravel/Vue.js/Nuxt.js)",
+    "Empresa": "Curotec",
+    "Análisis": "🚫 SENIOR | ✅ JAVASCRIPT | ✅ JAVA | ✅ PHP | ✅ C | ✅ REACT",
+    "Exp": "5 años",
+    "Link": "https://www.glassdoor.com/job-listing/j?jl=1009871062597"
+  },
+  {
+    "Score": 40,
+    "Cargo": "Senior Full-Stack Developer / AI Expert (Full-Time / On-Call)",
+    "Empresa": "Growmodo GmbH",
+    "Análisis": "🚫 SENIOR | ✅ JAVASCRIPT | ✅ JAVA | ✅ TYPESCRIPT | ✅ PHP | ✅ HTML5 | ✅ CSS3 | ✅ C | ✅ REACT | ✅ REACT NATIVE | ✅ NEXT.JS | ✅ GIT | ✅ AWS",
+    "Exp": "5 años",
+    "Link": "https://www.glassdoor.com/job-listing/j?jl=1009731951296"
+  },
+  {
+    "Score": 0,
+    "Cargo": "Developer Front End Mobile Senior | Pool Talent",
+    "Empresa": "TINET",
+    "Análisis": "🚫 SENIOR | ✅ SQL | ✅ JAVASCRIPT | ✅ JAVA | ✅ HTML5 | ✅ C",
+    "Exp": "5 años",
+    "Link": "https://www.glassdoor.com/job-listing/j?jl=1009542293480"
+  },
+  {
+    "Score": 60,
+    "Cargo": "Desarrollador Junior Javascript",
+    "Empresa": "AVOS Tech | Chile",
+    "Análisis": "⭐ JUNIOR | ✅ JAVASCRIPT | ✅ JAVA | ✅ C",
+    "Exp": "0 años",
+    "Link": "https://www.linkedin.com/jobs/view/4371623765"
+  },
+  {
+    "Score": 40,
+    "Cargo": "Full Stack Junior",
+    "Empresa": "Sodimac",
+    "Análisis": "⭐ JUNIOR | ✅ C",
+    "Exp": "0 años",
+    "Link": "https://www.linkedin.com/jobs/view/4371608442"
+  },
+  {
+    "Score": 40,
+    "Cargo": "Backend Developer Jr",
+    "Empresa": "Itaú Chile",
+    "Análisis": "⭐ JUNIOR | ✅ C",
+    "Exp": "0 años",
+    "Link": "https://www.linkedin.com/jobs/view/4371438567"
+  },
+  {
+    "Score": 10,
+    "Cargo": "Back End Developer CL (Remote)",
+    "Empresa": "Core Code io",
+    "Análisis": "✅ C",
+    "Exp": "0 años",
+    "Link": "https://www.linkedin.com/jobs/view/4370678066"
+  },
+  {
+    "Score": 10,
+    "Cargo": "Web Developer CL (Remote)",
+    "Empresa": "Core Code io",
+    "Análisis": "✅ C",
+    "Exp": "0 años",
+    "Link": "https://www.linkedin.com/jobs/view/4370657760"
+  },
+  {
+    "Score": 10,
+    "Cargo": "Fullstack Developer CL (Remote)",
+    "Empresa": "Core Code io",
+    "Análisis": "✅ C",
+    "Exp": "0 años",
+    "Link": "https://www.linkedin.com/jobs/view/4370675190"
+  },
+  {
+    "Score": 10,
+    "Cargo": "Desarrollador Back-end",
+    "Empresa": "BICE VIDA",
+    "Análisis": "✅ C",
+    "Exp": "0 años",
+    "Link": "https://www.linkedin.com/jobs/view/4367523573"
+  },
+  {
+    "Score": 10,
+    "Cargo": "Full Stack",
+    "Empresa": "Blue Express",
+    "Análisis": "✅ C",
+    "Exp": "0 años",
+    "Link": "https://www.linkedin.com/jobs/view/4356607869"
+  },
+  {
+    "Score": 20,
+    "Cargo": "Back-end Developer Python",
+    "Empresa": "Talana",
+    "Análisis": "✅ PYTHON | ✅ C",
+    "Exp": "0 años",
+    "Link": "https://www.linkedin.com/jobs/view/4366045626"
+  },
+  {
+    "Score": 10,
+    "Cargo": "Full Stack Engineer",
+    "Empresa": "Mercado Libre",
+    "Análisis": "✅ C",
+    "Exp": "0 años",
+    "Link": "https://www.linkedin.com/jobs/view/4354241488"
+  },
+  {
+    "Score": 10,
+    "Cargo": "Software Engineer Trainee - Java",
+    "Empresa": "Whitestack",
+    "Análisis": "✅ JAVA",
+    "Exp": "0 años",
+    "Link": "https://www.linkedin.com/jobs/view/4371798075"
+  },
+  {
+    "Score": 40,
+    "Cargo": "Desarrollador Full Stack Junior",
+    "Empresa": "Wall Partners",
+    "Análisis": "⭐ JUNIOR | ✅ C",
+    "Exp": "0 años",
+    "Link": "https://www.linkedin.com/jobs/view/4351192752"
+  },
+  {
+    "Score": 20,
+    "Cargo": "Back-end Developer Python",
+    "Empresa": "Talana",
+    "Análisis": "✅ PYTHON | ✅ C",
+    "Exp": "0 años",
+    "Link": "https://www.linkedin.com/jobs/view/4328313160"
+  },
+  {
+    "Score": 10,
+    "Cargo": "Buscamos Backend Developer",
+    "Empresa": "Grupo Maclean Servicios Integrales",
+    "Análisis": "✅ C",
+    "Exp": "0 años",
+    "Link": "https://www.linkedin.com/jobs/view/4264276213"
+  },
+  {
+    "Score": 40,
+    "Cargo": "Backend Engineer Junior",
+    "Empresa": "AVOS Tech | Chile",
+    "Análisis": "⭐ JUNIOR | ✅ C",
+    "Exp": "0 años",
+    "Link": "https://www.linkedin.com/jobs/view/4238999860"
+  },
+  {
+    "Score": 20,
+    "Cargo": "Developer Full Stack",
+    "Empresa": "SODIMAC S.A.",
+    "Análisis": "✅ C | ✅ GIT",
+    "Exp": "0 años",
+    "Link": "https://www.glassdoor.com/job-listing/j?jl=1010029984596"
+  },
+  {
+    "Score": 30,
+    "Cargo": "Field Sales Representative, Enterprise, Google Cloud (Spanish, English)",
+    "Empresa": "Google",
+    "Análisis": "✅ C | ✅ GIT | ✅ GOOGLE CLOUD",
+    "Exp": "10 años",
+    "Link": "https://www.glassdoor.com/job-listing/j?jl=1010012544531"
+  },
+  {
+    "Score": 120,
+    "Cargo": "Engineering Manager",
+    "Empresa": "Sezzle",
+    "Análisis": "✅ SQL | ✅ PYTHON | ✅ JAVASCRIPT | ✅ JAVA | ✅ TYPESCRIPT | ✅ C | ✅ MYSQL | ✅ REACT | ✅ REACT NATIVE | ✅ GIT | ✅ KUBERNETES | ✅ AWS",
+    "Exp": "8 años",
+    "Link": "https://www.glassdoor.com/job-listing/j?jl=1010012456700"
+  },
+  {
+    "Score": 50,
+    "Cargo": "Software Developer - Remote Chile",
+    "Empresa": "Jumpseller",
+    "Análisis": "✅ SQL | ✅ C | ✅ MYSQL | ✅ REACT | ✅ REACT NATIVE",
+    "Exp": "10 años",
+    "Link": "https://www.glassdoor.com/job-listing/j?jl=1009972506075"
+  },
+  {
+    "Score": 120,
+    "Cargo": "Software Engineer II with Accounting Experience (Chile)",
+    "Empresa": "Sezzle",
+    "Análisis": "✅ SQL | ✅ PYTHON | ✅ JAVA | ✅ TYPESCRIPT | ✅ C | ✅ MYSQL | ✅ POSTGRESQL | ✅ REACT | ✅ REACT NATIVE | ✅ GIT | ✅ KUBERNETES | ✅ AWS",
+    "Exp": "7 años",
+    "Link": "https://www.glassdoor.com/job-listing/j?jl=1009955518149"
+  },
+  {
+    "Score": 50,
+    "Cargo": "Senior Software Engineer with Accounting Experience (Chile)",
+    "Empresa": "Sezzle",
+    "Análisis": "🚫 SENIOR | ✅ SQL | ✅ PYTHON | ✅ JAVA | ✅ TYPESCRIPT | ✅ C | ✅ MYSQL | ✅ POSTGRESQL | ✅ REACT | ✅ REACT NATIVE | ✅ GIT | ✅ KUBERNETES | ✅ REST APIS | ✅ AWS",
+    "Exp": "8 años",
+    "Link": "https://www.glassdoor.com/job-listing/j?jl=1009952677815"
+  },
+  {
+    "Score": 40,
+    "Cargo": "Senior Software Engineer (Chile)",
+    "Empresa": "Sezzle",
+    "Análisis": "🚫 SENIOR | ✅ SQL | ✅ PYTHON | ✅ JAVA | ✅ TYPESCRIPT | ✅ C | ✅ MYSQL | ✅ REACT | ✅ REACT NATIVE | ✅ GIT | ✅ KUBERNETES | ✅ REST APIS | ✅ AWS",
+    "Exp": "8 años",
+    "Link": "https://www.glassdoor.com/job-listing/j?jl=1009435750700"
+  },
+  {
+    "Score": 150,
+    "Cargo": "Junior Software Engineer with Accounting Experience (Chile)",
+    "Empresa": "Sezzle",
+    "Análisis": "⭐ JUNIOR | ✅ SQL | ✅ PYTHON | ✅ JAVA | ✅ TYPESCRIPT | ✅ C | ✅ MYSQL | ✅ POSTGRESQL | ✅ REACT | ✅ REACT NATIVE | ✅ GIT | ✅ KUBERNETES | ✅ AWS",
+    "Exp": "0 años",
+    "Link": "https://www.glassdoor.com/job-listing/j?jl=1009933064220"
+  },
+  {
+    "Score": 60,
+    "Cargo": "Cursor Developer / AI-Driven Development Specialist",
+    "Empresa": "Trafilea",
+    "Análisis": "✅ PYTHON | ✅ JAVASCRIPT | ✅ JAVA | ✅ TYPESCRIPT | ✅ C | ✅ GIT",
+    "Exp": "0 años",
+    "Link": "https://www.glassdoor.com/job-listing/j?jl=1009909927240"
+  },
+  {
+    "Score": 10,
+    "Cargo": "Sr. Full Stack Engineer (Node/Nest/React)",
+    "Empresa": "Curotec",
+    "Análisis": "🚫 SENIOR | ✅ SQL | ✅ TYPESCRIPT | ✅ C | ✅ MYSQL | ✅ MONGODB | ✅ POSTGRESQL | ✅ REACT | ✅ GIT | ✅ DOCKER",
+    "Exp": "0 años",
+    "Link": "https://www.glassdoor.com/job-listing/j?jl=1009871062538"
+  },
+  {
+    "Score": 80,
+    "Cargo": "Full-Stack Developer (Java + Apache Camel)",
+    "Empresa": "Launchpad Technologies Inc.",
+    "Análisis": "✅ SQL | ✅ JAVA | ✅ C | ✅ POSTGRESQL | ✅ REACT | ✅ SPRING | ✅ ANGULAR | ✅ AWS",
+    "Exp": "5 años",
+    "Link": "https://www.glassdoor.com/job-listing/j?jl=1009825675002"
+  },
+  {
+    "Score": 30,
+    "Cargo": "Senior Full-Stack Java Developer",
+    "Empresa": "Sii",
+    "Análisis": "🚫 SENIOR | ✅ SQL | ✅ JAVASCRIPT | ✅ JAVA | ✅ C | ✅ SPRING | ✅ ANGULAR | ✅ GIT | ✅ DOCKER | ✅ KUBERNETES | ✅ REST APIS | ✅ AWS",
+    "Exp": "7 años",
+    "Link": "https://www.glassdoor.com/job-listing/j?jl=1009712439172"
+  },
+  {
+    "Score": 120,
+    "Cargo": "Mobile Engineer (Chile, All Levels)",
+    "Empresa": "Sezzle",
+    "Análisis": "✅ SQL | ✅ PYTHON | ✅ JAVASCRIPT | ✅ JAVA | ✅ TYPESCRIPT | ✅ C | ✅ MYSQL | ✅ REACT | ✅ REACT NATIVE | ✅ GIT | ✅ KUBERNETES | ✅ AWS",
+    "Exp": "0 años",
+    "Link": "https://www.glassdoor.com/job-listing/j?jl=1009435750719"
+  },
+  {
+    "Score": 0,
+    "Cargo": "Fullstack Developer (Senior) - Python (Django) + React - Remote, Latin America",
+    "Empresa": "Bluelight",
+    "Análisis": "🚫 SENIOR | ✅ PYTHON | ✅ C | ✅ REACT | ✅ DJANGO",
+    "Exp": "0 años",
+    "Link": "https://www.linkedin.com/jobs/view/4369910096"
+  },
+  {
+    "Score": 0,
+    "Cargo": "Fullstack Developer (Senior) - Python (Django) + React - Remote, Latin America",
+    "Empresa": "Bluelight",
+    "Análisis": "🚫 SENIOR | ✅ PYTHON | ✅ C | ✅ REACT | ✅ DJANGO",
+    "Exp": "0 años",
+    "Link": "https://www.linkedin.com/jobs/view/4369793812"
+  },
+  {
+    "Score": 0,
+    "Cargo": "Fullstack Developer (Senior) - Python (Django) + React - Remote, Latin America",
+    "Empresa": "Bluelight",
+    "Análisis": "🚫 SENIOR | ✅ PYTHON | ✅ C | ✅ REACT | ✅ DJANGO",
+    "Exp": "0 años",
+    "Link": "https://www.linkedin.com/jobs/view/4369795581"
+  },
+  {
+    "Score": 0,
+    "Cargo": "Fullstack Developer (Senior) - Python (Django) + React - Remote, Latin America",
+    "Empresa": "Bluelight",
+    "Análisis": "🚫 SENIOR | ✅ PYTHON | ✅ C | ✅ REACT | ✅ DJANGO",
+    "Exp": "0 años",
+    "Link": "https://www.linkedin.com/jobs/view/4369799390"
+  },
+  {
+    "Score": 10,
+    "Cargo": "Full-Stack Software Developer Engineer",
+    "Empresa": "Talana",
+    "Análisis": "✅ C",
+    "Exp": "0 años",
+    "Link": "https://www.linkedin.com/jobs/view/4357671508"
+  },
+  {
+    "Score": 10,
+    "Cargo": "Full-Stack Software Developer Engineer",
+    "Empresa": "Talana",
+    "Análisis": "✅ C",
+    "Exp": "0 años",
+    "Link": "https://www.linkedin.com/jobs/view/4328213365"
+  },
+  {
+    "Score": 30,
+    "Cargo": "Desarrollador Full Stack - Python/Angular",
+    "Empresa": "TINET S.A.",
+    "Análisis": "✅ PYTHON | ✅ C | ✅ ANGULAR",
+    "Exp": "0 años",
+    "Link": "https://www.linkedin.com/jobs/view/4304094078"
+  }
+]
