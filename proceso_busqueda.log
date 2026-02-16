@@ -1,0 +1,37 @@
+2026-02-04 14:45:47,923 - INFO - Iniciando búsqueda masiva para 3 cargos.
+2026-02-04 14:45:47,924 - INFO - --- BUSCANDO CARGO: Software Engineer ---
+2026-02-04 14:45:49,262 - INFO - Se encontraron 5 resultados brutos para Software Engineer.
+2026-02-04 14:45:49,263 - INFO - Analizando: Software Engineer II en Tessera Data
+2026-02-04 14:45:49,266 - INFO - -> Tecnologías detectadas: []
+2026-02-04 14:45:49,267 - INFO - Analizando: Full Stack Engineer en Mercado Libre
+2026-02-04 14:45:49,268 - INFO - -> Tecnologías detectadas: []
+2026-02-04 14:45:49,269 - INFO - Analizando: Desarrollador Junior en SERQ
+2026-02-04 14:45:49,270 - INFO - -> Tecnologías detectadas: []
+2026-02-04 14:45:49,270 - INFO - Analizando: Desarrollador Front-End Junior en Bruno Fritsch
+2026-02-04 14:45:49,271 - INFO - -> Tecnologías detectadas: []
+2026-02-04 14:45:49,273 - INFO - Analizando: Desarrollador Junior en AVOS Tech | Chile
+2026-02-04 14:45:49,274 - INFO - -> Tecnologías detectadas: []
+2026-02-04 14:45:49,274 - INFO - --- BUSCANDO CARGO: Integration Engineer ---
+2026-02-04 14:45:50,580 - INFO - Se encontraron 5 resultados brutos para Integration Engineer.
+2026-02-04 14:45:50,581 - INFO - Analizando: Ingeniero/a de Innovación Digital - Recién Egresado en COPEC S.A.
+2026-02-04 14:45:50,582 - INFO - -> Tecnologías detectadas: []
+2026-02-04 14:45:50,582 - INFO - Analizando: Puestos vacantes: Programadora(or) (19843) en Grupo Antofagasta Minerals
+2026-02-04 14:45:50,583 - INFO - -> Tecnologías detectadas: []
+2026-02-04 14:45:50,583 - INFO - Analizando: Software Engineer II en Tessera Data
+2026-02-04 14:45:50,584 - INFO - -> Tecnologías detectadas: []
+2026-02-04 14:45:50,584 - INFO - Analizando: Desarrollador Junior en SERQ
+2026-02-04 14:45:50,584 - INFO - -> Tecnologías detectadas: []
+2026-02-04 14:45:50,585 - INFO - Analizando: Cloud Integration Engineer en Whitestack
+2026-02-04 14:45:50,585 - INFO - -> Tecnologías detectadas: []
+2026-02-04 14:45:50,586 - INFO - --- BUSCANDO CARGO: Data Engineer ---
+2026-02-04 14:45:51,743 - INFO - Se encontraron 5 resultados brutos para Data Engineer.
+2026-02-04 14:45:51,743 - INFO - Analizando: Data Engineer (Barcelona, España) en Capitole
+2026-02-04 14:45:51,744 - INFO - -> Tecnologías detectadas: []
+2026-02-04 14:45:51,744 - INFO - Analizando: Puestos vacantes: Científica(o) de Datos (19819) en Grupo Antofagasta Minerals
+2026-02-04 14:45:51,745 - INFO - -> Tecnologías detectadas: []
+2026-02-04 14:45:51,745 - INFO - Analizando: Software Engineer II en Tessera Data
+2026-02-04 14:45:51,745 - INFO - -> Tecnologías detectadas: []
+2026-02-04 14:45:51,746 - INFO - Analizando: Data Engineer en Scotiabank
+2026-02-04 14:45:51,746 - INFO - -> Tecnologías detectadas: []
+2026-02-04 14:45:51,747 - INFO - Analizando: Data Engineer en Tessera Data
+2026-02-04 14:45:51,747 - INFO - -> Tecnologías detectadas: []

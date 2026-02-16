@@ -1,0 +1,54 @@
+{
+  "nombre": "Daniel Peñaloza",
+  "titulo": "Software Engineer",
+  "contacto": {
+    "email": "daniel.gallegoslb@gmail.com",
+    "linkedin": "www.linkedin.com/in/danielpgs"
+  },
+  "resumen": "Desarrollador de software con experiencia en soluciones escalables, integración de aplicaciones y análisis de datos.",
+  "skills_tecnicas": [
+    "python",
+    "javascript",
+    "react",
+    "nextjs",
+    "nodejs",
+    "html",
+    "css",
+    "mongodb",
+    "sql",
+    "gcp",
+    "docker",
+    "selenium",
+    "tailwind",
+    "redux"
+  ],
+  "idiomas": [
+    {
+      "idioma": "Inglés",
+      "nivel": "C2 Proficient"
+    }
+  ],
+  "experiencia_laboral": [
+    {
+      "empresa": "Whale Cloud",
+      "cargo": "Integration-Delivery Engineer",
+      "periodo": "Enero 2025 - Presente"
+    },
+    {
+      "empresa": "FID Seguros",
+      "cargo": "Data Engineer",
+      "periodo": "Enero 2023 - Abril 2024"
+    }
+  ],
+  "preferencias_busqueda": {
+    "exp_max": 15,
+    "cargos_objetivo": [
+      "Software Engineer",
+      "Integration Engineer",
+      "Data Engineer"
+    ],
+    "ubicacion_default": "Santiago, Chile",
+    "renta_min": 900000,
+    "renta_max": 3000000
+  }
+}
