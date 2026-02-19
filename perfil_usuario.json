@@ -1,43 +1,29 @@
 {
-  "nombre": "Daniel Peñaloza",
-  "titulo": "Software Engineer",
+  "nombre": "Daniel Peñaloza Gallegos",
+  "titulo": "Backend & Data Engineer",
   "contacto": {
     "email": "daniel.gallegoslb@gmail.com",
-    "linkedin": "www.linkedin.com/in/danielpgs"
+    "telefono": "+56 9 3061 6445",
+    "linkedin": "linkedin.com/in/danielpgs",
+    "github": "github.com/DanielGallegosLB",
+    "ubicacion": "Cerrillos, Santiago, Chile"
   },
-  "resumen": "Desarrollador de software con experiencia en soluciones escalables, integración de aplicaciones y análisis de datos.",
-  "skills_tecnicas": [
-    "postman",
-    "sql",
-    "Python",
-    "JavaScript",
-    "Java",
-    "TypeScript",
-    "PHP",
-    "HTML5",
-    "CSS3",
-    "C",
-    "MySQL",
-    "MongoDB",
-    "PostgreSQL",
-    "React",
-    "React Native",
-    "Next.js",
-    "Flask",
-    "Django",
-    "Spring",
-    "Express.js",
-    "Angular",
-    "Git",
-    "Docker",
-    "Kubernetes",
-    "REST APIs",
-    "Google Cloud",
-    "AWS",
-    "SCRUM",
-    "Jira"
+  "resumen": "Desarrollador Back End especializado en la creación de sistemas escalables y seguros, con experiencia en desarrollo web, pipelines ETL, funciones serverless y optimización de rendimiento.",
+  "educacion": {
+    "institucion": "Universidad de las Américas",
+    "carrera": "Ingeniería en Informática",
+    "periodo": "2020 – 2023",
+    "ubicacion": "Santiago, Chile"
+  },
+  "certificaciones": [
+    "AWS Cloud Practitioner Essentials (2024)",
+    "Linux Essentials (2023)"
   ],
   "idiomas": [
+    {
+      "idioma": "Español",
+      "nivel": "Nativo"
+    },
     {
       "idioma": "Inglés",
       "nivel": "C2 Proficient"
@@ -47,22 +33,137 @@
     {
       "empresa": "Whale Cloud",
       "cargo": "Integration-Delivery Engineer",
-      "periodo": "Enero 2025 - Presente"
+      "periodo": "Enero 2025 – Presente",
+      "ubicacion": "Santiago, Chile"
     },
     {
-      "empresa": "FID Seguros",
+      "empresa": "FID Chile Seguros Generales S.A.",
       "cargo": "Data Engineer",
-      "periodo": "Enero 2023 - Abril 2024"
+      "periodo": "Enero 2023 – Abril 2024",
+      "ubicacion": "Santiago, Chile",
+      "logros": [
+        "Implementé extractores ETL y funciones serverless en Google Cloud, reduciendo tiempos y costos en un 50%.",
+        "Generé 5 GB de datos clave para proyectos de análisis y detección de anomalías."
+      ]
+    },
+    {
+      "empresa": "Núcleo de Investigación de Data Science (NIDS)",
+      "cargo": "Full-stack Software Developer",
+      "periodo": "Enero 2023 – Marzo 2023",
+      "ubicacion": "Santiago, Chile",
+      "logros": [
+        "Automatización de solicitud de datos fiscales del SII: de 30 minutos a inmediato.",
+        "Desarrollé aplicación para obtener y calcular datos fiscales."
+      ]
     }
   ],
-  "preferencias_busqueda": {
-    "exp_max": 15,
-    "cargos_objetivo": [
-      "Back End Developer",
-      "Full-stack Software Developer"
+  "proyectos": [
+    {
+      "nombre": "Plataforma de Gestión de Prácticas Profesionales",
+      "stack": [
+        "React",
+        "Node.js",
+        "MongoDB",
+        "Tailwind CSS",
+        "Vercel",
+        "Express.js"
+      ],
+      "periodo": "Sep. 2023 – Sep. 2024"
+    },
+    {
+      "nombre": "Sitio Web de Comparación de Precios",
+      "stack": [
+        "Next.js",
+        "Tailwind CSS",
+        "MongoDB"
+      ],
+      "periodo": "Marzo 2022 – Junio 2023"
+    }
+  ],
+  "skills_tecnicas": {
+    "lenguajes": [
+      "Python",
+      "JavaScript",
+      "TypeScript",
+      "Java",
+      "PHP",
+      "HTML5",
+      "CSS3",
+      "C"
     ],
-    "ubicacion_default": "Santiago, Chile",
-    "renta_min": 900000,
-    "renta_max": 3000000
-  }
+    "bases_datos": [
+      "PostgreSQL",
+      "MySQL",
+      "MongoDB"
+    ],
+    "frameworks": [
+      "React",
+      "React Native",
+      "Next.js",
+      "Django",
+      "Flask",
+      "Express.js",
+      "Spring",
+      "Angular"
+    ],
+    "herramientas": [
+      "Git",
+      "Docker",
+      "Kubernetes",
+      "REST APIs",
+      "Postman",
+      "Jira"
+    ],
+    "cloud": [
+      "Google Cloud",
+      "AWS"
+    ],
+    "metodologias": [
+      "SCRUM",
+      "ETL",
+      "Serverless"
+    ]
+  },
+  "skills": [
+    "JavaScript",
+    "Python",
+    "MongoDB",
+    "Node.js",
+    "React",
+    "REST APIs",
+    "SQL",
+    "Django",
+    "TypeScript",
+    "Google Cloud",
+    "AWS",
+    "PostgreSQL",
+    "Docker",
+    "Kubernetes",
+    "Flask"
+  ],
+  "cargos": [
+    "Backend Developer",
+    "Desarrollador Backend",
+    "Software Developer",
+    "Full Stack Developer",
+    "Integration Engineer",
+    "Cloud Engineer"
+  ],
+  "beneficios": [
+    "Remoto",
+    "Bono",
+    "Seguro Complementario",
+    "Horario flexible"
+  ],
+  "renta_min": 1500000,
+  "renta_max": 5000000,
+  "experiencia_min": 0,
+  "experiencia_max": 4,
+  "prioridad_cargos": 10,
+  "prioridad_skills": 6,
+  "prioridad_sueldo": 10,
+  "prioridad_experiencia": 6,
+  "prioridad_beneficios": 3,
+  "linkedin_ubicacion": "Santiago, Chile",
+  "linkedin_paginas": 10
 }
