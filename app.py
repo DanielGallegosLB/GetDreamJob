@@ -166,8 +166,38 @@ def extraer_sueldo(texto: str):
     return None
 
 def extraer_experiencia(texto: str):
+    """
+    Extrae años de experiencia REQUERIDOS.
+    Prioriza números cerca de 'experiencia' para evitar capturar
+    frases como "35 años de trayectoria" de la empresa.
+    """
+    # Prioridad 1: número justo al lado de "experiencia" (ej: "3 Años de Experiencia", "Experiencia: 2 años")
+    m = re.search(r"(\d+)\s*(?:años|years|yrs|year|año)\s*de\s*experiencia", texto, re.IGNORECASE)
+    if m:
+        return int(m.group(1))
+
+    # Prioridad 2: "experiencia" seguida poco después de un número + años
+    m = re.search(r"experiencia[^.]{0,60}?(\d+)\s*(?:años|years|yrs|year|año)", texto, re.IGNORECASE)
+    if m:
+        val = int(m.group(1))
+        if val <= 20:  # sanity check: más de 20 años requeridos es inusual
+            return val
+
+    # Prioridad 3: número + años cerca de palabras clave de requisito
+    m = re.search(r"(\d+)\s*(?:años|years|yrs|year|año)[^.]{0,40}?(?:experiencia|requerid|mínimo|minimo)", texto, re.IGNORECASE)
+    if m:
+        val = int(m.group(1))
+        if val <= 20:
+            return val
+
+    # Fallback: primer match genérico, pero solo si es <= 20 (evita "35 años de trayectoria")
     m = re.search(r"(\d+)\s*(?:años|years|yrs|year|año)", texto, re.IGNORECASE)
-    return int(m.group(1)) if m else None
+    if m:
+        val = int(m.group(1))
+        if val <= 20:
+            return val
+
+    return None
 
 
 # ─────────────────────────────────────────────
@@ -667,16 +697,14 @@ def _click_mostrar_descripcion(driver):
                 elements = driver.find_elements(By.CSS_SELECTOR, sel)
                 for el in elements:
                     txt = (el.text or '').lower()
-                    # Filtrar solo el botón de descripción (puede haber otros role=button)
-                    if sel in ('[jsname="G7vtgf"] [role="button"]', '[jsaction*="EMtXr"] [role="button"]') or \
-                       'descripci' in txt or 'description' in txt or el.get_attribute('jsname') == 'G7vtgf':
+                    if sel in ('[jsname="G7vtgf"] [role="button"]', '[jsaction*="EMtXr"] [role="button"]') or                        'descripci' in txt or 'description' in txt or el.get_attribute('jsname') == 'G7vtgf':
                         try:
-                            from selenium.webdriver.common.action_chains import ActionChains
-                            ActionChains(driver).move_to_element(el).click().perform()
-                            print(f"   {ctx_label} → native click OK en '{sel}'")
-                            return True, 'native:' + sel
+                            # JS .click() directo — evita el error "has no size and location"
+                            driver.execute_script("arguments[0].click();", el)
+                            print(f"   {ctx_label} → js.click() OK en '{sel}'")
+                            return True, 'js_click:' + sel
                         except Exception as e_nat:
-                            print(f"   {ctx_label} → native click ERR en '{sel}': {e_nat}")
+                            print(f"   {ctx_label} → js.click() ERR en '{sel}': {e_nat}")
         except Exception as e:
             print(f"   {ctx_label} → selenium search ERR: {e}")
 
@@ -719,57 +747,88 @@ def _click_mostrar_descripcion(driver):
 def _extraer_descripcion(driver):
     """
     Extrae el texto de la descripción del panel derecho.
-    Busca en documento principal Y en iframes.
-    Busca el div con más texto dentro de #Sva75c.
+    Busca el div con mayor score (longitud + keywords) en toda la página.
+    No depende de #Sva75c ya que Google cambia su estructura frecuentemente.
     """
     print("   🔍 [4/4] Extrayendo texto de descripción...")
 
     js_extraer = """
-        const panel = document.getElementById('Sva75c');
-        if (!panel) return JSON.stringify({ok: false, fuente: 'NO_PANEL', texto: ''});
+        const KEYWORDS_DESC = ['responsabilidades','requisitos','experiencia','conocimientos',
+                                'habilidades','ofrecemos','funciones','buscamos','perfil',
+                                'responsibilities','requirements','experience','skills',
+                                'we offer','qualifications','about','role','position'];
 
-        const divs = panel.querySelectorAll('div');
-        let mejor = '';
-        for (const d of divs) {
-            if (d.children.length > 20) continue;
+        function scoreDiv(d) {
             const t = (d.innerText || '').trim();
-            if (t.length > mejor.length && t.length < 30000) {
-                mejor = t;
+            if (t.length < 150 || t.length > 50000) return {score: 0, texto: ''};
+            if (d.children.length > 30) return {score: 0, texto: ''};
+            const tl = t.toLowerCase();
+            const bonus = KEYWORDS_DESC.filter(k => tl.includes(k)).length * 200;
+            const uiElems = d.querySelectorAll('button,input,select,nav,header').length;
+            const score = t.length + bonus - (uiElems * 100);
+            return {score, texto: t};
+        }
+
+        let mejor = {score: 0, texto: '', fuente: 'none'};
+
+        // 1. Selectores conocidos del panel de Google Jobs
+        const SELECTORES_PANEL = [
+            '#Sva75c', '[data-async-context]', '.cv0dee', '.HBvzbc',
+            '.pE8vnd', '.YgLbBe', '[jsname="bN97Pc"]', '.NgUYpe',
+            '.job-description', '[class*="description"]', '[class*="desc"]'
+        ];
+        for (const sel of SELECTORES_PANEL) {
+            try {
+                const el = document.querySelector(sel);
+                if (!el) continue;
+                const r = scoreDiv(el);
+                if (r.score > mejor.score) mejor = {...r, fuente: sel};
+            } catch(e) {}
+        }
+
+        // 2. Si no hay nada con buen score, barrer todos los divs
+        if (mejor.score < 500) {
+            const divs = document.querySelectorAll('div');
+            for (const d of divs) {
+                const r = scoreDiv(d);
+                if (r.score > mejor.score) mejor = {...r, fuente: 'div-sweep'};
             }
         }
-        return JSON.stringify({ok: mejor.length > 80, fuente: 'Sva75c', texto: mejor});
+
+        const ok = mejor.texto.length > 150;
+        return JSON.stringify({ok, fuente: mejor.fuente, score: mejor.score, texto: mejor.texto});
     """
 
-    # Intentar en documento principal
+    def _intentar(ctx_label):
+        try:
+            raw = driver.execute_script(js_extraer)
+            data = json.loads(raw)
+            print(f"   ↳ {ctx_label}: fuente={data.get('fuente')}, score={data.get('score',0)}, len={len(data.get('texto',''))}")
+            return data
+        except Exception as e:
+            print(f"   ↳ {ctx_label} error: {e}")
+            return {"ok": False, "fuente": "error", "texto": ""}
+
     driver.switch_to.default_content()
-    raw = _js(driver, js_extraer)
+    data = _intentar("Doc principal")
 
-    try:
-        data = json.loads(raw)
-    except Exception:
-        data = {"ok": False, "fuente": "parse_error", "texto": ""}
-
-    if not data.get("ok"):
-        print(f"   ↳ Doc principal: fuente={data.get('fuente')} — buscando en iframes...")
+    if not data.get("ok") or len(data.get("texto", "")) < 150:
         frames = driver.find_elements(By.TAG_NAME, "iframe")
         for i, frame in enumerate(frames):
             try:
                 driver.switch_to.frame(frame)
-                raw2 = driver.execute_script(js_extraer)
-                data2 = json.loads(raw2)
-                print(f"   ↳ iframe[{i}]: fuente={data2.get('fuente')}, len={len(data2.get('texto',''))}")
-                if data2.get("ok"):
+                data2 = _intentar(f"iframe[{i}]")
+                if data2.get("ok") and len(data2.get("texto", "")) > len(data.get("texto", "")):
                     data = data2
-                    break
                 driver.switch_to.default_content()
             except Exception as e:
-                print(f"   ↳ iframe[{i}] error: {e}")
+                print(f"   ↳ iframe[{i}] acceso error: {e}")
                 driver.switch_to.default_content()
 
     driver.switch_to.default_content()
 
     texto = data.get("texto", "")
-    if len(texto) > 80:
+    if len(texto) > 150:
         print(f"   ✅ Descripción OK: {len(texto)} chars | preview: {texto[:120].replace(chr(10),' ')}")
         return texto
 
