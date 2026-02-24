@@ -863,17 +863,18 @@ def _leer_titulo_panel(driver):
     return titulo
 
 
-def scrape_google_jobs(query, ubicacion, progress_bar, status_text, urls_vistas, desde_idx=0):
+def scrape_google_jobs(query, ubicacion, progress_bar, status_text, urls_vistas, desde_idx=0, headless=False, max_resultados=3):
     print("\n" + "="*60)
     print("🚀 Iniciando scrape_google_jobs")
-    print(f"   Query: {query} | Ubicación: {ubicacion}")
+    print(f"   Query: {query} | Ubicación: {ubicacion} | Headless: {headless} | Max resultados: {max_resultados}")
     print("="*60)
 
     chrome_options = Options()
     chrome_options.add_argument("--disable-blink-features=AutomationControlled")
     chrome_options.add_experimental_option("excludeSwitches", ["enable-automation"])
     chrome_options.add_experimental_option("useAutomationExtension", False)
-    # chrome_options.add_argument("--headless=new")
+    if headless:
+        chrome_options.add_argument("--headless=new")
 
     print("\n🔧 Iniciando ChromeDriver...")
     service = Service(ChromeDriverManager().install())
@@ -912,7 +913,7 @@ def scrape_google_jobs(query, ubicacion, progress_bar, status_text, urls_vistas,
         status_text.markdown(f"📋 {total} trabajos detectados. Extrayendo descripciones...")
 
         # ── 3. Iterar TODOS los bloques ───────────────────────
-        LOTE = 3
+        LOTE = max_resultados
         idx_inicio = desde_idx
         idx_fin = min(total, desde_idx + LOTE)
         bloques_a_procesar = idx_fin
@@ -1312,16 +1313,22 @@ def main():
         query_g = st.text_input("Palabras clave (Google):", value=query_default, key="g_query")
         st.info("💡 Abre Chrome, extrae la descripción completa de CADA oferta encontrada.")
 
-        col_buscar, col_mas = st.columns([1, 1])
+        col_cfg1, col_cfg2 = st.columns([1, 1])
+        max_resultados_g = col_cfg1.number_input(
+            "🔢 Resultados a buscar", min_value=1, max_value=50, value=5, step=1, key="g_max_resultados"
+        )
+        headless_g = col_cfg2.checkbox("🕶️ Modo headless (sin ventana)", value=False, key="g_headless")
 
-        # Botón búsqueda inicial (siempre desde idx 0)
-        if col_buscar.button("🔍 Buscar en Google Jobs", type="primary", use_container_width=True):
+        if st.button("🔍 Buscar en Google Jobs", type="primary", use_container_width=True):
             progress_bar = st.progress(0)
             status_text  = st.empty()
             urls_vistas  = cargar_urls_existentes()
             result = scrape_google_jobs(
                 query_g, p.get("linkedin_ubicacion", "Chile"),
-                progress_bar, status_text, urls_vistas, desde_idx=0
+                progress_bar, status_text, urls_vistas,
+                desde_idx=0,
+                headless=headless_g,
+                max_resultados=max_resultados_g,
             )
             ofertas_g, siguiente_idx, total_g = result
             if ofertas_g:
@@ -1333,38 +1340,6 @@ def main():
                 st.toast(f"✅ {len(ofertas_g)} ofertas desde Google", icon="🌍")
             else:
                 st.warning("No se encontraron resultados nuevos en Google.")
-
-        # Botón Ver más (solo visible si hay más ofertas disponibles)
-        siguiente_idx = st.session_state.get("google_siguiente_idx", 0)
-        total_g = st.session_state.get("google_total", 0)
-        hay_mas = siguiente_idx > 0 and siguiente_idx < total_g
-        if col_mas.button(
-            f"➕ Ver más ofertas ({siguiente_idx+1}–{min(siguiente_idx+3, total_g)} de {total_g})",
-            use_container_width=True,
-            disabled=not hay_mas
-        ):
-            progress_bar = st.progress(0)
-            status_text  = st.empty()
-            urls_vistas  = cargar_urls_existentes()
-            result = scrape_google_jobs(
-                st.session_state.get("google_query", query_g),
-                p.get("linkedin_ubicacion", "Chile"),
-                progress_bar, status_text, urls_vistas,
-                desde_idx=siguiente_idx
-            )
-            ofertas_nuevas, sig_idx, total_g2 = result
-            if ofertas_nuevas:
-                # Acumular a las existentes (evitar duplicados por URL)
-                existentes = st.session_state.get("ofertas", [])
-                urls_existentes = {o["url"] for o in existentes}
-                nuevas_unicas = [o for o in ofertas_nuevas if o["url"] not in urls_existentes]
-                st.session_state.ofertas = existentes + nuevas_unicas
-                st.session_state.google_siguiente_idx = sig_idx
-                st.session_state.google_total = total_g2
-                st.session_state.res_final = None
-                st.toast(f"✅ +{len(nuevas_unicas)} ofertas más", icon="🌍")
-            else:
-                st.warning("No se encontraron más resultados.")
 
     with tab_dummy:
         n_dummy = st.number_input("Cantidad de ofertas dummy", 5, 100, 20, key="ndummy")
