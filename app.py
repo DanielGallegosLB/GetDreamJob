@@ -78,6 +78,24 @@ def guardar_perfil(perfil: dict):
         json.dump(perfil, f, indent=2, ensure_ascii=False)
     log.info("Perfil guardado.")
 
+
+def cargar_ofertas_historico() -> list:
+    """Carga todas las ofertas guardadas en el JSON historico."""
+    if os.path.exists(OFERTAS_FILE):
+        try:
+            with open(OFERTAS_FILE, "r", encoding="utf-8") as f:
+                data = json.load(f)
+            return data.get("ofertas", [])
+        except Exception as e:
+            log.error(f"Error cargando historico: {e}")
+    return []
+
+def borrar_historial():
+    """Elimina el archivo de ofertas historicas."""
+    if os.path.exists(OFERTAS_FILE):
+        os.remove(OFERTAS_FILE)
+        log.info("Historial de ofertas borrado.")
+
 def cargar_urls_existentes() -> set:
     if os.path.exists(OFERTAS_FILE):
         try:
@@ -873,15 +891,37 @@ def scrape_google_jobs(query, ubicacion, progress_bar, status_text, urls_vistas,
     chrome_options.add_argument("--disable-blink-features=AutomationControlled")
     chrome_options.add_experimental_option("excludeSwitches", ["enable-automation"])
     chrome_options.add_experimental_option("useAutomationExtension", False)
+    # Argumentos anti-deteccion comunes (aplican siempre)
+    chrome_options.add_argument("--no-sandbox")
+    chrome_options.add_argument("--disable-dev-shm-usage")
+    chrome_options.add_argument("--window-size=1920,1080")
+    chrome_options.add_argument("--disable-gpu")
+    chrome_options.add_argument("--lang=es-CL,es;q=0.9")
+    chrome_options.add_argument(
+        "--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+        "AppleWebKit/537.36 (KHTML, like Gecko) "
+        "Chrome/133.0.0.0 Safari/537.36"
+    )
     if headless:
         chrome_options.add_argument("--headless=new")
+        chrome_options.add_argument("--disable-extensions")
+        chrome_options.add_argument("--disable-infobars")
+        chrome_options.add_argument("--disable-notifications")
+        chrome_options.add_argument("--disable-popup-blocking")
+        chrome_options.add_argument("--ignore-certificate-errors")
+        chrome_options.add_argument("--allow-running-insecure-content")
 
-    print("\n🔧 Iniciando ChromeDriver...")
+    print("\n\U0001f527 Iniciando ChromeDriver...")
     service = Service(ChromeDriverManager().install())
     driver  = webdriver.Chrome(service=service, options=chrome_options)
     driver.execute_cdp_cmd(
         "Page.addScriptToEvaluateOnNewDocument",
-        {"source": "Object.defineProperty(navigator, 'webdriver', {get: () => undefined})"}
+        {"source": (
+            "Object.defineProperty(navigator, 'webdriver', {get: () => undefined});"
+            "Object.defineProperty(navigator, 'plugins', {get: () => [1,2,3,4,5]});"
+            "Object.defineProperty(navigator, 'languages', {get: () => ['es-CL','es','en-US','en']});"
+            "window.chrome = { runtime: {} };"
+        )}
     )
     ofertas = []
 
@@ -894,6 +934,20 @@ def scrape_google_jobs(query, ubicacion, progress_bar, status_text, urls_vistas,
         progress_bar.progress(0.05)
         driver.get(url)
         time.sleep(4)
+
+        # Detectar CAPTCHA / bloqueo de Google
+        page_src_lower = driver.page_source.lower()
+        if "recaptcha" in page_src_lower or "captcha-form" in page_src_lower or "trafico inusual" in page_src_lower or "unusual traffic" in page_src_lower:
+            msg = (
+                "CAPTCHA detectado por Google.\n\n"
+                "- Si usas **modo headless**: desactivalo para que el navegador sea visible y puedas resolver el CAPTCHA manualmente.\n"
+                "- Si ya ests en modo visible: espera unos minutos antes de reintentar, o cambia de red."
+            )
+            print("   CAPTCHA detectado. Abortando.")
+            status_text.markdown(f":no_entry: **Google bloque la busqueda (CAPTCHA)**. {msg}")
+            driver.quit()
+            return [], desde_idx, 0
+
 
         # ── 2. Localizar bloques ──────────────────────────────
         print("\n🔎 Buscando bloques de trabajo (div.EimVGf)...")
@@ -1259,7 +1313,7 @@ def mostrar_tabla_resultados(resultados: list, ofertas_brutas: list, perfil: dic
 # MAIN
 # ─────────────────────────────────────────────
 def main():
-    st.set_page_config(layout="wide", page_title="DreamJob v4.1", page_icon="🎯")
+    st.set_page_config(layout="wide", page_title="DreamJ v4.1", page_icon="🎯")
     st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;700;800&display=swap');
@@ -1275,6 +1329,12 @@ def main():
         st.session_state.perfil = cargar_perfil()
     if "puntajes_override" not in st.session_state:
         st.session_state.puntajes_override = {}
+    # Cargar historial local al inicio de sesion
+    if "ofertas" not in st.session_state:
+        hist = cargar_ofertas_historico()
+        st.session_state.ofertas = hist
+        if hist:
+            log.info(f"Historial cargado: {len(hist)} ofertas desde JSON.")
 
     p = sidebar_config(st.session_state.perfil)
     st.session_state.perfil = p
@@ -1302,9 +1362,12 @@ def main():
                 p.get("linkedin_paginas", 3), progress_bar, status_text, urls_vistas
             )
             if ofertas_nuevas:
-                st.session_state.ofertas = ofertas_nuevas
+                existentes = st.session_state.get("ofertas", [])
+                urls_existentes = {o.get("url") for o in existentes}
+                nuevas_unicas = [o for o in ofertas_nuevas if o.get("url") not in urls_existentes]
+                st.session_state.ofertas = existentes + nuevas_unicas
                 st.session_state.res_final = None
-                st.toast(f"✨ {len(ofertas_nuevas)} ofertas nuevas de LinkedIn!", icon="🔥")
+                st.toast(f"✨ {len(nuevas_unicas)} nuevas ofertas de LinkedIn (total: {len(st.session_state.ofertas)})", icon="🔥")
             else:
                 st.warning("⚠️ No se encontraron ofertas nuevas en LinkedIn.")
 
@@ -1332,12 +1395,16 @@ def main():
             )
             ofertas_g, siguiente_idx, total_g = result
             if ofertas_g:
-                st.session_state.ofertas = ofertas_g
+                # Acumular a las existentes (evitar duplicados por URL)
+                existentes = st.session_state.get("ofertas", [])
+                urls_existentes = {o.get("url") for o in existentes}
+                nuevas_unicas = [o for o in ofertas_g if o.get("url") not in urls_existentes]
+                st.session_state.ofertas = existentes + nuevas_unicas
                 st.session_state.google_siguiente_idx = siguiente_idx
                 st.session_state.google_total = total_g
                 st.session_state.google_query = query_g
                 st.session_state.res_final = None
-                st.toast(f"✅ {len(ofertas_g)} ofertas desde Google", icon="🌍")
+                st.toast(f"✅ {len(nuevas_unicas)} nuevas ofertas agregadas (total: {len(st.session_state.ofertas)})", icon="🌍")
             else:
                 st.warning("No se encontraron resultados nuevos en Google.")
 
@@ -1359,11 +1426,19 @@ def main():
         ofertas_cargadas = []
 
     n_cargadas = len(ofertas_cargadas)
-    col_info, col_btn = st.columns([3, 1])
+    col_info, col_btn, col_trash = st.columns([3, 1, 1])
     col_info.caption(
-        f"📦 **{n_cargadas} ofertas únicas** listas para analizar."
+        f"📦 **{n_cargadas} ofertas únicas** listas para analizar (historial persistente)."
         if n_cargadas else "Sin ofertas. Busca en LinkedIn, Google o genera Dummies."
     )
+
+    if col_trash.button("🗑️ Borrar historial", use_container_width=True, disabled=not n_cargadas):
+        borrar_historial()
+        st.session_state.ofertas = []
+        st.session_state.res_final = None
+        st.session_state.puntajes_override = {}
+        st.toast("Historial borrado.", icon="🗑️")
+        st.rerun()
 
     if col_btn.button("🚀 Analizar", type="primary", use_container_width=True, disabled=not n_cargadas):
         with st.spinner("Calculando match..."):
