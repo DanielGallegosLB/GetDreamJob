@@ -938,15 +938,20 @@ def scrape_google_jobs(query, ubicacion, progress_bar, status_text, urls_vistas,
         # Detectar CAPTCHA / bloqueo de Google
         page_src_lower = driver.page_source.lower()
         if "recaptcha" in page_src_lower or "captcha-form" in page_src_lower or "trafico inusual" in page_src_lower or "unusual traffic" in page_src_lower:
-            msg = (
-                "CAPTCHA detectado por Google.\n\n"
-                "- Si usas **modo headless**: desactivalo para que el navegador sea visible y puedas resolver el CAPTCHA manualmente.\n"
-                "- Si ya ests en modo visible: espera unos minutos antes de reintentar, o cambia de red."
+            print("   CAPTCHA detectado. Esperando resolución manual...")
+            status_text.markdown(
+                "🔒 **CAPTCHA detectado** — Resuélvelo en la ventana de Chrome que se abrió y luego **presiona Enter en la terminal** para continuar."
             )
-            print("   CAPTCHA detectado. Abortando.")
-            status_text.markdown(f":no_entry: **Google bloque la busqueda (CAPTCHA)**. {msg}")
-            driver.quit()
-            return [], desde_idx, 0
+            input("\n>>> CAPTCHA detectado. Resuélvelo en Chrome y presiona Enter aquí para continuar...")
+            # Esperar a que Google cargue los resultados después del CAPTCHA
+            time.sleep(3)
+            page_src_lower = driver.page_source.lower()
+            if "recaptcha" in page_src_lower or "captcha-form" in page_src_lower:
+                print("   CAPTCHA aún presente. Abortando.")
+                status_text.markdown(":no_entry: **CAPTCHA no resuelto. Abortando.**")
+                driver.quit()
+                return [], desde_idx, 0
+            print("   ✅ CAPTCHA superado. Continuando...")
 
 
         # ── 2. Localizar bloques ──────────────────────────────
@@ -964,6 +969,111 @@ def scrape_google_jobs(query, ubicacion, progress_bar, status_text, urls_vistas,
             return []
 
         total = len(bloques)
+        status_text.markdown(f"📋 {total} trabajos detectados inicialmente. Cargando más...")
+
+        # ── JS que encuentra el contenedor scrolleable real de Google Jobs ──
+        JS_FIND_SCROLL_CONTAINER = """
+            // Buscar el ancestro scrolleable del primer bloque EimVGf
+            const bloques = document.querySelectorAll('div.EimVGf');
+            if (!bloques.length) return null;
+
+            let el = bloques[0];
+            // Subir por el DOM hasta encontrar un contenedor con overflow scrolleable
+            while (el && el !== document.body) {
+                const style = window.getComputedStyle(el);
+                const overflow = style.overflow + ' ' + style.overflowY;
+                const scrollable = overflow.includes('auto') || overflow.includes('scroll');
+                if (scrollable && el.scrollHeight > el.clientHeight + 50) {
+                    return el;
+                }
+                el = el.parentElement;
+            }
+            // Fallback: buscar cualquier div con scroll que contenga los bloques
+            const divs = document.querySelectorAll('div');
+            let mejor = null;
+            let mejorH = 0;
+            for (const d of divs) {
+                const s = window.getComputedStyle(d);
+                const ov = s.overflow + ' ' + s.overflowY;
+                if ((ov.includes('auto') || ov.includes('scroll')) &&
+                    d.scrollHeight > d.clientHeight + 100 &&
+                    d.scrollHeight > mejorH &&
+                    d.querySelector('div.EimVGf')) {
+                    mejor = d;
+                    mejorH = d.scrollHeight;
+                }
+            }
+            return mejor;
+        """
+
+        JS_SCROLL_CONTAINER = """
+            const cont = arguments[0];
+            cont.scrollTop += 900;
+            return cont.scrollTop;
+        """
+
+        JS_SCROLL_FALLBACK = """
+            // Hacer scroll al último bloque EimVGf visible
+            const bloques = document.querySelectorAll('div.EimVGf');
+            if (bloques.length) {
+                const ultimo = bloques[bloques.length - 1];
+                ultimo.scrollIntoView({behavior: 'instant', block: 'end'});
+            }
+            // Además hacer scroll de ventana hacia abajo
+            window.scrollBy(0, 800);
+            return document.querySelectorAll('div.EimVGf').length;
+        """
+
+        # Detectar el contenedor scrolleable real via JS
+        lista_container = driver.execute_script(JS_FIND_SCROLL_CONTAINER)
+        if lista_container:
+            print(f"   ✅ Contenedor scrolleable detectado: tag={lista_container.tag_name}, "
+                  f"scrollHeight={driver.execute_script('return arguments[0].scrollHeight', lista_container)}")
+        else:
+            print("   ⚠️ No se detectó contenedor scrolleable — se usará fallback de ventana.")
+
+        # ── Scroll para cargar todos los bloques necesarios ──────────────
+        intentos_scroll    = 0
+        intentos_sin_cambio = 0
+        MAX_SIN_CAMBIO     = 10   # intentos consecutivos sin nuevos bloques antes de rendirse
+        max_intentos       = 60   # límite absoluto de scrolls
+
+        while len(bloques) < (desde_idx + max_resultados) and intentos_scroll < max_intentos:
+            antes = len(bloques)
+
+            # Intentar scroll en el contenedor; si falla o no existe, usar fallback
+            scrolled = False
+            if lista_container:
+                try:
+                    new_top = driver.execute_script(JS_SCROLL_CONTAINER, lista_container)
+                    print(f"   Scroll {intentos_scroll+1} (contenedor): scrollTop={new_top}")
+                    scrolled = True
+                except Exception as e:
+                    print(f"   ⚠️ Scroll en contenedor falló ({e}), redetectando...")
+                    lista_container = driver.execute_script(JS_FIND_SCROLL_CONTAINER)
+
+            if not scrolled:
+                n = driver.execute_script(JS_SCROLL_FALLBACK)
+                print(f"   Scroll {intentos_scroll+1} (fallback ventana): bloques visibles={n}")
+
+            # Esperar que Google cargue el siguiente lote
+            time.sleep(2.5)
+
+            bloques = driver.find_elements(By.CSS_SELECTOR, "div.EimVGf")
+            print(f"   → {len(bloques)} bloques totales (meta: {desde_idx + max_resultados})")
+            intentos_scroll += 1
+
+            if len(bloques) == antes:
+                intentos_sin_cambio += 1
+                if intentos_sin_cambio >= MAX_SIN_CAMBIO:
+                    print(f"   ⛔ {MAX_SIN_CAMBIO} scrolls consecutivos sin nuevos bloques. "
+                          f"Máximo alcanzable: {len(bloques)}.")
+                    break
+            else:
+                intentos_sin_cambio = 0  # hubo nuevos bloques, resetear contador
+
+        total = len(bloques)
+        print(f"   ✅ Total bloques tras scroll: {total}")
         status_text.markdown(f"📋 {total} trabajos detectados. Extrayendo descripciones...")
 
         # ── 3. Iterar TODOS los bloques ───────────────────────

@@ -1,3 +1,5 @@
 streamlit
 pandas
 python-jobspy
+webdriver_manager
+selenium
