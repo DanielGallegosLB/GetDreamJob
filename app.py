@@ -1,4 +1,5 @@
 import streamlit as st
+import cv_match
 import pandas as pd
 import json
 import os
@@ -1422,36 +1423,8 @@ def mostrar_tabla_resultados(resultados: list, ofertas_brutas: list, perfil: dic
 # ─────────────────────────────────────────────
 # MAIN
 # ─────────────────────────────────────────────
-def main():
-    st.set_page_config(layout="wide", page_title="DreamJ v4.1", page_icon="🎯")
-    st.markdown("""
-    <style>
-    @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;700;800&display=swap');
-    html, body, [class*="css"]  { font-family: 'Syne', sans-serif; }
-    h1, h2, h3                  { font-family: 'Syne', sans-serif; font-weight: 800; letter-spacing: -0.5px; }
-    .stDataFrame td             { font-family: 'Space Mono', monospace; font-size: 0.8rem; }
-    .block-container            { padding-top: 2rem; }
-    a { color: #4A90D9 !important; text-decoration: underline !important; }
-    </style>
-    """, unsafe_allow_html=True)
-
-    if "perfil" not in st.session_state:
-        st.session_state.perfil = cargar_perfil()
-    if "puntajes_override" not in st.session_state:
-        st.session_state.puntajes_override = {}
-    # Cargar historial local al inicio de sesion
-    if "ofertas" not in st.session_state:
-        hist = cargar_ofertas_historico()
-        st.session_state.ofertas = hist
-        if hist:
-            log.info(f"Historial cargado: {len(hist)} ofertas desde JSON.")
-
-    p = sidebar_config(st.session_state.perfil)
-    st.session_state.perfil = p
-
-    st.title("🎯 DreamJob v4.1")
-    st.caption("Búsqueda, extracción completa y análisis de ofertas laborales.")
-
+def _vista_clasica(p):
+    """Pestaña clásica: LinkedIn básico, Google Jobs, Dummy, análisis y tabla."""
     # ── FUENTE DE DATOS ──
     tab_li, tab_google, tab_dummy = st.tabs(["🔗 LinkedIn Jobs", "🔍 Google Jobs", "🎲 Datos Dummy"])
 
@@ -1587,6 +1560,43 @@ def main():
                     lines = f.readlines()
                 st.code("".join(lines[-150:]), language="text")
 
+
+
+def main():
+    st.set_page_config(layout="wide", page_title="DreamJ v4.1", page_icon="🎯")
+    st.markdown("""
+    <style>
+    @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;700;800&display=swap');
+    html, body, [class*="css"]  { font-family: 'Syne', sans-serif; }
+    h1, h2, h3                  { font-family: 'Syne', sans-serif; font-weight: 800; letter-spacing: -0.5px; }
+    .stDataFrame td             { font-family: 'Space Mono', monospace; font-size: 0.8rem; }
+    .block-container            { padding-top: 2rem; }
+    a { color: #4A90D9 !important; text-decoration: underline !important; }
+    </style>
+    """, unsafe_allow_html=True)
+
+    if "perfil" not in st.session_state:
+        st.session_state.perfil = cargar_perfil()
+    if "puntajes_override" not in st.session_state:
+        st.session_state.puntajes_override = {}
+    # Cargar historial local al inicio de sesion
+    if "ofertas" not in st.session_state:
+        hist = cargar_ofertas_historico()
+        st.session_state.ofertas = hist
+        if hist:
+            log.info(f"Historial cargado: {len(hist)} ofertas desde JSON.")
+
+    p = sidebar_config(st.session_state.perfil)
+    st.session_state.perfil = p
+
+    st.title("🎯 DreamJob v4.1")
+    st.caption("Búsqueda, extracción completa y análisis de ofertas laborales.")
+
+    tab_cv, tab_clasica = st.tabs(["📄 CV Match (LinkedIn)", "🎯 Búsqueda clásica"])
+    with tab_cv:
+        cv_match.render_tab()
+    with tab_clasica:
+        _vista_clasica(p)
 
 if __name__ == "__main__":
     main()
